@@ -204,3 +204,37 @@ func TestRunningStatC_ModifiedVariance(t *testing.T) {
 		t.Errorf("Found %f, wanted %f", got, want)
 	}
 }
+
+// Test merging two different RunningStats
+func TestRunningStatAB_Mean(t *testing.T) {
+	rs := InitRunningStatA()
+	rsB := InitRunningStatB()
+	rs.Merge(rsB)
+
+	want := float64(24)
+	if got := float64(rs.RunningStatCount()) * rs.RunningStatMean(); got != want {
+		t.Errorf("Found %f, wanted %f", got, want)
+	}
+}
+
+func TestRunningStatAB_Deviation(t *testing.T) {
+	rs := InitRunningStatA()
+	rsB := InitRunningStatB()
+	rs.Merge(rsB)
+
+	want := float64(2)
+	if got := roundFloat(rs.RunningStatDeviation(),3); got != want {
+		t.Errorf("Found %f, wanted %f", got, want)
+	}
+}
+
+func TestRunningStatAB_Variance(t *testing.T) {
+	rs := InitRunningStatA()
+	rsB := InitRunningStatB()
+	rs.Merge(rsB)
+
+	want := float64(4)
+	if got := rs.RunningStatVariance(); got != want {
+		t.Errorf("Found %f, wanted %f", got, want)
+	}
+}

@@ -51,6 +51,24 @@ func (rs *RunningStat) Init(count int64,mean float64,deviation float64) {
 	}
 }
 
+func (rs *RunningStat) Merge(injest RunningStat) {
+
+	combinedCount := rs.m_n + injest.m_n
+
+	delta := injest.m_oldM - rs.m_oldM
+	combinedMean := rs.m_newM + float64(injest.m_n)*delta/float64(combinedCount)
+
+	delta2 := delta * delta
+	q := float64(rs.m_n*injest.m_n) * delta2 / float64(combinedCount)
+	combinedDeviation := rs.m_newS + injest.m_oldS + q
+
+	rs.m_n = combinedCount
+	rs.m_oldM = combinedMean
+	rs.m_newM = combinedMean
+	rs.m_oldS = combinedDeviation
+	rs.m_newS = combinedDeviation
+}
+
 func (rs RunningStat) RunningStatCount() int64 {
 	return rs.m_n
 }
